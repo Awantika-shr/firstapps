@@ -155,3 +155,69 @@ this.getStudents()
 }
 
 </script>
+
+body {
+    background: #f5f6fa;
+    font-family: Arial;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+.card {
+    width: 700px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    background: #3498db;
+    color: white;
+}
+
+button:hover {
+    color: white;
+    background-color: #246895;
+}
+
+button.edit {
+    background: #3498db;
+    color: white;
+}
+
+button.edit:hover {
+    color: white;
+    background-color: #246895;
+}
+
+button.delete {
+    background: #e74c3c;
+    color: white;
+}
+
+button.delete:hover {
+    background: #b03628;
+    color: white;
+}

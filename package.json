@@ -18,6 +18,7 @@
         "@vitejs/plugin-vue": "^6.0.4",
         "devextreme": "^25.2.5",
         "devextreme-vue": "^25.2.5",
-        "vue": "^3.5.29"
+        "vue": "^3.5.29",
+        "vue-router": "^5.0.3"
     }
 }
