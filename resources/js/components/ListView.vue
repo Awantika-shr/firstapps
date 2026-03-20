@@ -49,7 +49,14 @@ props: ["items"],
 methods:{
 
 onAdd(e){
-this.$emit("update-list", e)
+   const item = e.fromData[e.fromIndex]
+
+  const exists = e.toData.find(i => i.name === item.name)
+
+  if(!exists){
+    this.$emit("update-list", e)
+  }
+
 },
 
 onReorder(e){

@@ -94,7 +94,6 @@ export default {
 
 components:{ DxSortable },
 
-// ✅ IMPORTANT (data parent se aayega)
 props: ["sections"],
 
 data(){
@@ -107,25 +106,22 @@ columns:""
 methods:{
 
 onAdd(e){
-const item = e.fromData.splice(e.fromIndex,1)[0]
 
-// duplicate prevent
-const exists = e.toData.find(f => f.name === item.name)
+// ✅ parent ko notify karo (IMPORTANT)
+this.$emit("update-edit", e)
 
-if(!exists){
-e.toData.splice(e.toIndex,0,item)
-}
 },
 
 onReorder(e){
-const item = e.fromData.splice(e.fromIndex,1)[0]
-e.fromData.splice(e.toIndex,0,item)
+
+// ✅ reorder bhi parent handle kare
+this.$emit("update-edit", e)
+
 },
 
 createSection(){
 if(!this.sectionName.trim()) return
 
-// ✅ parent ko notify karo
 this.$emit("add-section", {
 name:this.sectionName.trim(),
 columns:this.columns || 1,

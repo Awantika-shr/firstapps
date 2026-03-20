@@ -50,33 +50,30 @@ export default {
       container1: [],
       container2: [],
       editSections: [],
-      listViewJson: {},
-
-      jsonData: {
-        name: { editorType: "dxTextBox", name: "name", label: "Name" },
-        salary: { editorType: "Currency", name: "salary", label: "Salary" },
-        bonus: { editorType: "Currency", name: "bonus", label: "Bonus" },
-        joining_date: { editorType: "dxDateBox", name: "joining_date", label: "Joining Date" },
-        experience: { editorType: "dxNumberBox", name: "experience", label: "Experience" },
-        website: { editorType: "dxTextBox", name: "website", label: "Website" },
-        linkedin: { editorType: "dxTextBox", name: "linkedin", label: "LinkedIn Profile" },
-        github: { editorType: "dxTextBox", name: "github", label: "Github Profile" },
-        notes: { editorType: "dxTextArea", name: "notes", label: "Notes" },
-        twitter: { editorType: "dxTextBox", name: "twitter", label: "Twitter" }
-      }
+      listViewJson: [], // ✅ ARRAY FORMAT
+      jsonData: {}
     }
   },
 
   mounted() {
-    this.container1 = Object.values(this.jsonData)
+    this.loadFields()
     this.loadListView()
-    this.loadEditView()   // ✅ IMPORTANT
+    this.loadEditView()
   },
 
   methods: {
 
-    /* ---------------- DRAG HANDLERS ---------------- */
+    /* ---------------- LOAD MASTER ---------------- */
+    loadFields() {
+      fetch("/get-fields")
+        .then(res => res.json())
+        .then(data => {
+          this.jsonData = data || {}
+          this.updateModuleFields()
+        })
+    },
 
+    /* ---------------- DRAG ---------------- */
     handleFieldsUpdate(e) {
       this.onAddOrReorder(e)
     },
@@ -91,8 +88,6 @@ export default {
 
     onAddOrReorder(e) {
       const item = e.fromData.splice(e.fromIndex, 1)[0]
-
-      // duplicate prevent
       const exists = e.toData.find(i => i.name === item.name)
       if (!exists) {
         e.toData.splice(e.toIndex, 0, item)
@@ -100,7 +95,6 @@ export default {
     },
 
     /* ---------------- SECTION ---------------- */
-
     createSection(section) {
       this.editSections.push({
         name: section.name,
@@ -109,25 +103,29 @@ export default {
       })
     },
 
-    /* ---------------- SAVE HANDLER ---------------- */
-
+    /* ---------------- SAVE ---------------- */
     handleSave() {
       if (this.$route.path === "/listview") {
         this.saveListView()
       }
-
       if (this.$route.path === "/editview") {
         this.saveEditView()
       }
     },
 
     /* ---------------- LIST VIEW ---------------- */
-
     saveListView() {
-      const result = {}
+      const result = []
 
       this.container2.forEach(item => {
-        result[item.name] = item
+        result.push({
+          dataField: item.name,
+          editorType: item.editorType || "dxTextBox",
+          label: {
+            text: item.label || item.vname || item.name
+          },
+          visible: true
+        })
       })
 
       this.listViewJson = result
@@ -141,41 +139,54 @@ export default {
             .getAttribute("content")
         },
         body: JSON.stringify({ data: this.listViewJson })
-      }).then(() => alert("List View Saved Successfully"))
+      })
+      .then(() => {
+        alert("List View Saved Successfully")
+        this.updateModuleFields()
+      })
     },
 
     loadListView() {
       fetch("/get-listview")
         .then(res => res.json())
         .then(data => {
-          this.listViewJson = data || {}
+          this.listViewJson = data || []
 
-          this.container2 = Object.values(this.listViewJson).filter(
-            i => i && i.name && i.label
-          )
+          this.container2 = this.listViewJson.map(item => {
+            return {
+              name: item.dataField,
+              label: item.label?.text || item.dataField,
+              editorType: item.editorType
+            }
+          })
 
-          const savedFields = Object.keys(this.listViewJson)
-
-          this.container1 = Object.values(this.jsonData).filter(
-            i => !savedFields.includes(i.name)
-          )
+          this.updateModuleFields()
         })
     },
 
     /* ---------------- EDIT VIEW ---------------- */
-
     saveEditView() {
-      const result = {}
+      const result = []
 
       this.editSections.forEach(section => {
-        result[section.name] = {
-          columns: section.columns,
-          fields: {}
+        const group = {
+          name: section.name,
+          itemType: "group",
+          colCount: section.columns || 1,
+          items: []
         }
 
         section.fields.forEach(field => {
-          result[section.name].fields[field.name] = field
+          group.items.push({
+            dataField: field.name,
+            editorType: field.editorType || "dxTextBox",
+            label: {
+              text: field.label || field.vname || field.name
+            }
+          })
         })
+
+        result.push(group)
       })
 
       fetch("/save-editview", {
@@ -187,26 +198,69 @@ export default {
             .getAttribute("content")
         },
         body: JSON.stringify({ data: result })
-      }).then(() => alert("Edit View Saved Successfully"))
+      })
+      .then(() => {
+        alert("Edit View Saved Successfully")
+        this.updateModuleFields()
+      })
     },
 
     loadEditView() {
       fetch("/get-editview")
         .then(res => res.json())
         .then(data => {
-
           this.editSections = []
 
-          Object.keys(data).forEach(name => {
+          ;(data || []).forEach(group => {
             this.editSections.push({
-              name: name,
-              columns: data[name].columns || 1,
-              fields: Object.values(data[name].fields || {})
+              name: group.name,
+              columns: group.colCount || 1,
+              fields: (group.items || []).map(item => {
+                return {
+                  name: item.dataField,
+                  label: item.label?.text || item.dataField,
+                  editorType: item.editorType
+                }
+              })
             })
           })
-        })
-    }
 
+          this.updateModuleFields()
+        })
+    },
+
+    /* ---------------- CORE ---------------- */
+    updateModuleFields() {
+
+      // ✅ LIST VIEW
+      if (this.$route.path === "/listview") {
+        const listFields = (this.listViewJson || []).map(i => i.dataField)
+        this.container1 = Object.values(this.jsonData).filter(
+          f => !listFields.includes(f.name)
+        )
+      }
+
+      // ✅ EDIT VIEW
+      else if (this.$route.path === "/editview") {
+        const editFields = []
+        this.editSections.forEach(sec => {
+          sec.fields.forEach(f => editFields.push(f.name))
+        })
+        this.container1 = Object.values(this.jsonData).filter(
+          f => !editFields.includes(f.name)
+        )
+      }
+
+      else {
+        this.container1 = Object.values(this.jsonData)
+      }
+    }
+  },
+
+  watch: {
+    $route() {
+      this.updateModuleFields()
+    }
   }
 }
 </script>
