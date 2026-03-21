@@ -10,68 +10,237 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-body {
-    background: #f5f6fa;
-    font-family: Arial;
-}
+/* NAVBAR */
 
-.container {
+.navbar {
     display: flex;
-    justify-content: center;
-    margin: 40px auto;
-}
-
-h2 {
-    font-size: 30px;
-}
-
-.card {
-    width: 700px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    gap: 12px;
+    margin-bottom: 20px;
+    background: #f5f7fb;
+    padding: 10px;
     border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
-input {
-    width: 100%;
+.nav-btn {
+    padding: 10px 20px;
+    border: none;
+    background: #e4e7ec;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.nav-btn:hover {
+    background: #d9dee7;
+}
+
+.active {
+    background: #4CAF50;
+    color: white;
+}
+
+.activeBtn {
+    background: #4CAF50;
+    color: white;
+}
+
+/* MAIN LAYOUT */
+
+.main {
+    display: flex;
+    gap: 40px;
+}
+
+.view-containers {
+    display: flex;
+    gap: 20px;
+}
+
+/* BOXES */
+
+.box {
+    width: 300px;
+    height: 400px;
+    border: 2px dashed #ccc;
+    padding: 10px;
+    position: relative;
+}
+
+.edit-box {
+    width: 750px;
+    height: auto;
+    overflow-y: auto;
+}
+
+/* INPUT AREA */
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.edit-input {
+    flex: 1;
     padding: 8px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin-top: 20px;
 }
 
-button {
-    padding: 8px 12px;
-    margin: 5px;
+.add-btn {
+    margin-top: 20px;
+    padding: 8px 15px;
+    background: #4CAF50;
+    color: white;
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    background: #3498db;
-    color: white;
 }
 
-button:hover {
+/* SAVE BUTTON */
+
+.save-btn {
+    margin: auto 135px;
+    padding: 1px 5px;
+    position: absolute;
+    background-color: #867f7f;
+    border: none;
     color: white;
-    background-color: #246895;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-button.edit {
-    background: #3498db;
+.save-btn1 {
+    margin-left: 40px;
+    padding: 1px 5px;
+    position: absolute;
+    background-color: #867f7f;
+    border: none;
     color: white;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-button.edit:hover {
-    color: white;
-    background-color: #246895;
+/* FIELD LIST */
+
+.list {
+    height: 330px;
+    overflow-y: auto;
 }
 
-button.delete {
-    background: #e74c3c;
+.item {
+    background: #4CAF50;
     color: white;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: move;
+    border-radius: 4px;
+    transition: 0.2s;
+
+    min-width: 0;
+    /* THIS IS THE REAL FIX */
+    width: 100%;
+
+    /* ✅ NEW (ELLIPSIS FIX) */
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
 }
 
-button.delete:hover {
-    background: #b03628;
-    color: white;
+.item span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+}
+
+.item span.expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.item.expanded {
+    height: auto;
+    align-items: flex-start;
+    /* top align for multiline */
+}
+
+.item:hover {
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+/* SECTION CONTAINER */
+
+.section-box {
+    border: 1px solid #aaa;
+    margin-bottom: 15px;
+    background: #fafafa;
+    min-height: 200px;
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* SECTION HEADER */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-box h4 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* COLUMN INPUT */
+
+.column-input {
+    width: 70px;
+    padding: 4px;
+}
+
+/* SORTABLE AREA */
+
+.section-scroll {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* GRID LAYOUT FOR FIELDS */
+
+.section-list {
+    min-height: 100px;
+    width: 100%;
+    align-items: start;
+    display: grid;
+}
+
+.section-list>.item {
+    min-width: 0;
+}
+
+/* OPTIONAL GRID WRAPPER (future use) */
+
+.columns-wrapper {
+    display: flex;
+    gap: 15px;
+}
+
+.column-box {
+    flex: 1;
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 6px;
+    min-height: 120px;
 }

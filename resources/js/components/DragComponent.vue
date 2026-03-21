@@ -1,385 +1,346 @@
 <template>
-<div style="margin-bottom:20px">
 
-  <input
-    v-model="newContainerName"
-    placeholder="Enter container name"
-  />
+  <!-- NAVBAR -->
+  <div class="navbar">
 
-  <button class="create-btn" @click="createContainer">
-    Create Container
-  </button>
+    <button class="nav-btn active">
+      Fields
+    </button>
+
+    <button
+      class="nav-btn"
+      :class="{activeBtn:showListView}"
+      @click="toggleListView"
+    >
+      List View
+    </button>
+
+    <button
+      class="nav-btn"
+      :class="{activeBtn:showEditView}"
+      @click="toggleEditView"
+    >
+      Edit View
+    </button>
+
+  </div>
+
+  <div class="main">
+
+    <!-- Fields (Always Visible) -->
+    <div class="box">
+      <h3>Fields</h3>
+
+      <DxSortable
+        tag="div"
+        class="list"
+        :data="container1"
+        group="shared"
+        item-selector=".item"
+        :move-item-on-drop="false"
+        @add="onAdd"
+        @reorder="onReorder"
+      >
+        <div
+          v-for="item in container1"
+          :key="item.name"
+          class="item"
+        >
+          {{ item.label }}
+        </div>
+      </DxSortable>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="view-containers">
+
+      <!-- LIST VIEW -->
+      <div v-if="showListView" class="box">
+
+        <h3>List View</h3>
+
+        <button class="save-btn" @click="saveListView">
+          Save
+        </button>
+
+        <DxSortable
+          tag="div"
+          class="list"
+          :data="container2"
+          group="shared"
+          item-selector=".item"
+          :move-item-on-drop="false"
+          @add="onAdd"
+          @reorder="onReorder"
+        >
+          <div
+            v-for="item in container2"
+            :key="item.name"
+            class="item"
+          >
+            {{ item.label }}
+          </div>
+        </DxSortable>
+
+      </div>
+
+      <!-- EDIT VIEW -->
+      <div v-if="showEditView" class="box edit-box">
+
+        <h3>Edit View</h3>
+
+        <div class="input-row">
+
+          <input
+            class="edit-input"
+            v-model="sectionName"
+            placeholder="Enter section name"
+          />
+
+          <button class="add-btn" @click="createSection">
+            Add Container
+          </button>
+
+        </div>
+
+        <!-- DYNAMIC SECTIONS -->
+        <div
+          v-for="section in editSections"
+          :key="section.name"
+          class="section-box"
+        >
+
+          <h4>
+            {{ section.name }}
+          </h4>
+
+       <div class="section-scroll">
+
+  <DxSortable
+    tag="div"
+    class="section-list"
+    :data="section.fields"
+    group="shared"
+    item-selector=".item"
+    :move-item-on-drop="false"
+    @add="onAdd"
+    @reorder="onReorder"
+  >
+
+    <div
+      v-for="item in section.fields"
+      :key="item.name"
+      class="item"
+    >
+      {{ item.label }}
+    </div>
+
+  </DxSortable>
 
 </div>
 
-<div class="main">
+        </div>
 
-<!-- Field Box -->
-<div class="box">
-<h3>Fields</h3>
+      </div>
 
-<DxSortable
-tag="div"
-class="list"
-:data="container1"
-group="shared"
-item-selector=".item"
-:move-item-on-drop="false"
-@add="onAdd"
-@reorder="onReorder"
->
+    </div>
 
-<div
-v-for="item in container1"
-:key="item.name"
-class="item"
->
-{{ item.label }}
-</div>
+  </div>
 
-</DxSortable>
-</div>
-
-
-<!-- List View -->
-<div class="box">
-
-<h3>
-List View
-<button class="list-btn" @click="saveListView">Save</button>
-</h3>
-
-<DxSortable
-tag="div"
-class="list"
-:data="container2"
-group="shared"
-item-selector=".item"
-:move-item-on-drop="false"
-@add="onAdd"
-@reorder="onReorder"
->
-
-<div
-v-for="item in container2"
-:key="item.name"
-class="item"
->
-{{ item.label }}
-</div>
-
-</DxSortable>
-
-</div>
-
-
-<!-- Dynamic Containers -->
-
-<div
-class="box"
-v-for="(items,name) in dynamicContainers"
-:key="name"
->
-
-<h3>
-{{ name }}
-<button class="list-btn" @click="saveListView">Save</button>
-
-</h3>
-
-<DxSortable
-tag="div"
-class="list"
-:data="dynamicContainers[name]"
-group="shared"
-item-selector=".item"
-:move-item-on-drop="false"
-@add="onAdd"
-@reorder="onReorder"
->
-
-<div
-v-for="item in dynamicContainers[name]"
-:key="item.name"
-class="item"
->
-{{ item.label }}
-</div>
-
-</DxSortable>
-
-</div>
-
-</div>
 </template>
 
-
 <script>
-
 import { DxSortable } from "devextreme-vue/sortable";
 
 export default {
 
-components:{ DxSortable },
+  components:{ DxSortable },
 
-data(){
-return{
+  data(){
+    return{
 
-jsonData:{},
+      jsonData:{
+        name:{editorType:"dxTextBox",name:"name",label:"Name"},
+        salary:{editorType:"Currency",name:"salary",label:"Salary"},
+        bonus:{editorType:"Currency",name:"bonus",label:"Bonus"},
+        joining_date:{editorType:"dxDateBox",name:"joining_date",label:"Joining Date"},
+        experience:{editorType:"dxNumberBox",name:"experience",label:"Experience"},
+        website:{editorType:"dxTextBox",name:"website",label:"Website"},
+        linkedin:{editorType:"dxTextBox",name:"linkedin",label:"LinkedIn Profile"},
+        github:{editorType:"dxTextBox",name:"github",label:"Github Profile"},
+        notes:{editorType:"dxTextArea",name:"notes",label:"Notes"},
+        twitter:{editorType:"dxTextBox",name:"twitter",label:"Twitter"}
+      },
 
-container1:[],
-container2:[],
+      container1:[],
+      container2:[],
 
-listViewJson:{},
+      sectionName:"",
+      editSections:[],
 
-newContainerName:"",
+      showListView:false,
+      showEditView:false,
 
-dynamicContainers:{} 
+      listViewJson:{}
+
+    }
+  },
+
+  mounted(){
+
+    this.container1 = Object.values(this.jsonData)
+
+    this.loadListView()
+
+    const savedList = localStorage.getItem("showListView")
+    const savedEdit = localStorage.getItem("showEditView")
+
+    if(savedList !== null){
+      this.showListView = savedList === "true"
+    }
+
+    if(savedEdit !== null){
+      this.showEditView = savedEdit === "true"
+    }
+
+  },
+
+  methods:{
+
+    toggleListView(){
+      this.showListView = !this.showListView
+      localStorage.setItem("showListView",this.showListView)
+    },
+
+    toggleEditView(){
+      this.showEditView = !this.showEditView
+      localStorage.setItem("showEditView",this.showEditView)
+    },
+
+    onAdd(e){
+      const item = e.fromData.splice(e.fromIndex,1)[0]
+      e.toData.splice(e.toIndex,0,item)
+    },
+
+    onReorder(e){
+      const item = e.fromData.splice(e.fromIndex,1)[0]
+      e.fromData.splice(e.toIndex,0,item)
+    },
+
+    saveListView(){
+
+      const result = {}
+
+      this.container2.forEach(item=>{
+        result[item.name] = item
+      })
+
+      this.listViewJson = result
+
+      fetch("/save-listview",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-CSRF-TOKEN":document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content")
+        },
+        body:JSON.stringify({
+          data:this.listViewJson
+        })
+      })
+      .then(res=>res.json())
+      .then(()=>{
+        alert("List View Saved Successfully")
+      })
+
+    },
+
+    loadListView(){
+
+      fetch("/get-listview")
+      .then(res=>res.json())
+      .then(data=>{
+
+        this.listViewJson = data || {}
+
+        this.container2 = Object.values(this.listViewJson).filter(
+          item => item && item.name && item.label
+        )
+
+        const savedFields = Object.keys(this.listViewJson)
+
+        this.container1 = Object.values(this.jsonData).filter(
+          item => !savedFields.includes(item.name)
+        )
+
+      })
+
+    },
+
+    createSection(){
+
+      if(!this.sectionName.trim()) return
+
+      this.editSections.push({
+        name:this.sectionName,
+        fields:[]
+      })
+
+      this.sectionName=""
+
+    }
+
+  }
 
 }
-},
-
-mounted(){
-
-this.loadFields()
-this.loadListView()
-
-},
-
-methods:{
-
-
-// CREATE NEW CONTAINER
-createContainer(){
-
-if(!this.newContainerName) return
-
-if(this.dynamicContainers[this.newContainerName]){
-alert("Container already exists")
-return
-}
-
-this.dynamicContainers[this.newContainerName] = []
-
-this.newContainerName=""
-
-},
-
-
-// DRAG ADD
-onAdd(e){
-
-const item = e.fromData.splice(e.fromIndex,1)[0]
-
-e.toData.splice(e.toIndex,0,item)
-
-},
-
-
-// DRAG REORDER
-onReorder(e){
-
-const item = e.fromData.splice(e.fromIndex,1)[0]
-
-e.fromData.splice(e.toIndex,0,item)
-
-},
-
-
-// SAVE BUTTON
-saveListView(){
-
-const result={}
-const containers=[]
-
-
-// LISTVIEW CONTAINER
-this.container2.forEach(item=>{
-
-result[item.name]={...item,container:null}
-
-})
-
-
-// DYNAMIC CONTAINERS
-Object.keys(this.dynamicContainers).forEach(containerName=>{
-
-containers.push(containerName)
-
-this.dynamicContainers[containerName].forEach(item=>{
-
-result[item.name]={
-...item,
-container:containerName
-}
-
-})
-
-})
-
-
-// SAVE CONTAINER NAMES
-result["_containers"]=containers
-
-this.listViewJson=result
-
-
-
-// SAVE LISTVIEW JSON
-fetch("/save-listview",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json",
-"X-CSRF-TOKEN":document
-.querySelector('meta[name="csrf-token"]')
-.getAttribute("content")
-},
-
-body:JSON.stringify({data:this.listViewJson})
-
-})
-.then(res=>res.json())
-.then(()=>{
-
-console.log("listview.json saved")
-
-})
-
-
-// SAVE FIELDS JSON
-const fieldsData={}
-
-Object.values(this.jsonData).forEach(item=>{
-
-fieldsData[item.name]=item
-
-})
-
-
-fetch("/save-fields",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json",
-"X-CSRF-TOKEN":document
-.querySelector('meta[name="csrf-token"]')
-.getAttribute("content")
-},
-
-body:JSON.stringify({data:fieldsData})
-
-})
-.then(res=>res.json())
-.then(()=>{
-
-console.log("fields.json saved")
-
-alert("Fields Saved Successfully")
-
-})
-
-},
-
-
-// LOAD FIELDS
-loadFields(){
-
-fetch("/get-fields")
-.then(res=>res.json())
-.then(data=>{
-
-this.jsonData=data
-
-this.container1=Object.values(this.jsonData)
-
-this.loadListView()
-
-})
-
-},
-
-
-// LOAD LISTVIEW
-loadListView(){
-
-fetch("/get-listview")
-
-.then(res=>res.json())
-
-.then(data=>{
-
-this.listViewJson=data || {}
-
-this.container2=[]
-this.dynamicContainers={}
-
-
-// LOAD CONTAINER NAMES
-const containers=this.listViewJson._containers || []
-
-containers.forEach(name=>{
-
-this.dynamicContainers[name] = []
-
-})
-
-
-// LOAD ITEMS
-Object.entries(this.listViewJson).forEach(([key,item])=>{
-
-if(key === "_containers") return
-if(typeof item !== "object") return
-
-if(item.container){
-
-if(!this.dynamicContainers[item.container]){
-this.dynamicContainers[item.container] = []
-}
-
-this.dynamicContainers[item.container].push(item)
-
-}else{
-
-this.container2.push(item)
-
-}
-
-})
-
-
-// UNUSED FIELDS
-const savedFields=Object.keys(this.listViewJson)
-
-this.container1=Object.values(this.jsonData).filter(
-
-item=>!savedFields.includes(item.name)
-
-)
-
-})
-
-}
-
-}
-
-}
-
 </script>
-
 
 <style>
 
-h3{
-font-size:25px;
+.navbar{
+display:flex;
+gap:12px;
+margin-bottom:20px;
+background:#f5f7fb;
+padding:10px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+.nav-btn{
+padding:10px 20px;
+border:none;
+background:#e4e7ec;
+cursor:pointer;
+font-weight:600;
+border-radius:6px;
+transition:0.2s;
+}
+
+.nav-btn:hover{
+background:#d9dee7;
+}
+
+.active{
+background:#4CAF50;
+color:white;
+}
+
+.activeBtn{
+background:#4CAF50;
+color:white;
 }
 
 .main{
-display:grid;
-grid-template-columns:repeat(auto-fill,300px);
+display:flex;
 gap:40px;
+}
+
+.view-containers{
+display:flex;
+gap:20px;
 }
 
 .box{
@@ -389,13 +350,44 @@ border:2px dashed #ccc;
 padding:10px;
 }
 
+.edit-box{
+width:750px;
+height:800px
+}
+
+.input-row{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
+
+.edit-input{
+flex:1;
+padding:8px;
+}
+
+.add-btn{
+padding:8px 15px;
+background:#4CAF50;
+color:white;
+border:none;
+cursor:pointer;
+border-radius:4px;
+}
+
+.save-btn{
+margin-bottom:10px;
+padding:8px 15px;
+background-color: #867f7f;
+border:none;
+color:white;
+border-radius:4px;
+cursor:pointer;
+}
+
 .list{
 height:330px;
 overflow-y:auto;
-}
-
-.list-btn{
-margin-left:90px;
 }
 
 .item{
@@ -404,19 +396,30 @@ color:white;
 padding:10px;
 margin:5px 0;
 cursor:grab;
+border-radius:4px;
 }
 
-.create-btn{
-cursor:pointer;
+.section-box{
+border:1px solid #aaa;
+margin-bottom:15px;
+background:#fafafa;
+height:140px;
+padding:8px;
+border-radius:6px;
+display:flex;
+flex-direction:column;
 }
 
-.delete-btn{
-margin-left:5px;
-background:red;
-color:white;
-border:none;
-padding:3px 8px;
-cursor:pointer;
+.section-box h4{
+margin-bottom:10px;
+}
+.section-scroll{
+flex:1;
+overflow-y:auto;
+}
+
+.section-list{
+min-height:40px;
 }
 
 </style>
