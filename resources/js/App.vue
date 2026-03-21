@@ -50,7 +50,7 @@ export default {
       container1: [],
       container2: [],
       editSections: [],
-      listViewJson: [], // ✅ ARRAY FORMAT
+      listViewJson: [], // ARRAY FORMAT
       jsonData: {}
     }
   },
@@ -87,12 +87,33 @@ export default {
     },
 
     onAddOrReorder(e) {
-      const item = e.fromData.splice(e.fromIndex, 1)[0]
-      const exists = e.toData.find(i => i.name === item.name)
-      if (!exists) {
-        e.toData.splice(e.toIndex, 0, item)
-      }
-    },
+       // SAME CONTAINER → SWAP (replace behavior) 
+       if (e.fromData === e.toData) { 
+        const fromIndex = e.fromIndex 
+        const toIndex = e.toIndex 
+        // safety check 
+        if (fromIndex === toIndex)
+         return 
+         const temp = e.fromData[fromIndex]
+          // Vue reactivity safe swap 
+          if (this.$set) {
+             this.$set(e.fromData, fromIndex, e.fromData[toIndex]) 
+             this.$set(e.fromData, toIndex, temp)
+              } else { 
+              e.fromData[fromIndex] = e.fromData[toIndex]
+              e.fromData[toIndex] = temp
+              }
+
+              return
+              } 
+              //DIFFERENT CONTAINER → MOVE (no duplicate)
+              const item = e.fromData.splice(e.fromIndex, 1)[0] 
+              const exists = e.toData.find(i => i.name === item.name) 
+              
+              if (!exists) {
+                e.toData.splice(e.toIndex, 0, item) 
+                } 
+                },
 
     /* ---------------- SECTION ---------------- */
     createSection(section) {

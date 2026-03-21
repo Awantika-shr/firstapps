@@ -72,11 +72,14 @@ gap:'10px'
 >
 
 <div
-v-for="item in section.fields"
-:key="item.name"
-class="item"
+  v-for="item in section.fields"
+  :key="item.name"
+  class="item"
+  :title="item.label"
 >
-{{ item.label }}
+  <span>
+    {{ item.label }}
+  </span>
 </div>
 
 </DxSortable>
@@ -134,8 +137,7 @@ this.columns=""
 
 saveEditView(){
 this.$emit("save")
-}
-
+},
 }
 
 }

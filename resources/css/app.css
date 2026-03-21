@@ -137,10 +137,43 @@
     cursor: move;
     border-radius: 4px;
     transition: 0.2s;
+
+    min-width: 0;
+    /* THIS IS THE REAL FIX */
+    width: 100%;
+
+    /* ✅ NEW (ELLIPSIS FIX) */
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.item span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+}
+
+.item span.expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.item.expanded {
+    height: auto;
+    align-items: flex-start;
+    /* top align for multiline */
 }
 
 .item:hover {
     opacity: 0.9;
+    cursor: pointer;
 }
 
 /* SECTION CONTAINER */
@@ -189,8 +222,12 @@
 .section-list {
     min-height: 100px;
     width: 100%;
-    width: 100%;
     align-items: start;
+    display: grid;
+}
+
+.section-list>.item {
+    min-width: 0;
 }
 
 /* OPTIONAL GRID WRAPPER (future use) */
