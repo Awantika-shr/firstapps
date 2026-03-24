@@ -54,30 +54,36 @@ v-model="section.columns"
 </div>
 </div>
 
-<!-- DRAG AREA -->
+<!-- ✅ SORTABLE WITH SWAP -->
 <DxSortable
-tag="div"
-class="section-list"
-:data="section.fields"
-group="shared"
-item-selector=".item"
-:move-item-on-drop="false"
-@add="onAdd"
-@reorder="onReorder"
-:style="{
-display:'grid',
-gridTemplateColumns:`repeat(${section.columns},1fr)`,
-gap:'10px'
+  tag="div"
+  class="section-list"
+  :data="section.fields"
+  group="shared"
+  item-selector=".item"
+
+  :move-item-on-drop="false"
+  :allow-reordering="true"
+  :allow-drop-inside-item="false"
+
+  @add="onAdd"
+  @reorder="onAdd"
+
+  :style="{
+  display:'flex',
+  flexWrap:'wrap',
+  gap:'10px',
+  '--cols': section.columns
 }"
 >
 
 <div
   v-for="item in section.fields"
-  :key="item.name"
+  :key="item.id || item.name"
   class="item"
   :title="item.label"
 >
-  <span>
+  <span class="label-text">
     {{ item.label }}
   </span>
 </div>
@@ -91,7 +97,9 @@ gap:'10px'
 </template>
 
 <script>
-import { DxSortable } from "devextreme-vue/sortable";
+
+// ✅ IMPORTANT IMPORTS
+import { DxSortable } from "devextreme-vue/sortable"
 
 export default {
 
@@ -108,18 +116,9 @@ columns:""
 
 methods:{
 
+// ✅ ONLY FOR CROSS CONTAINER DRAG
 onAdd(e){
-
-// ✅ parent ko notify karo (IMPORTANT)
 this.$emit("update-edit", e)
-
-},
-
-onReorder(e){
-
-// ✅ reorder bhi parent handle kare
-this.$emit("update-edit", e)
-
 },
 
 createSection(){
@@ -138,6 +137,7 @@ this.columns=""
 saveEditView(){
 this.$emit("save")
 },
+
 }
 
 }
