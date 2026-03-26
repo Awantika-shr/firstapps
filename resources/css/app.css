@@ -6,249 +6,276 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* NAVBAR */
 
+/* ============================
+   RESET
+============================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================
+   BODY (SOFT PREMIUM BG)
+============================ */
+body {
+    background: #dbeafe;
+    font-family: var(--font-sans);
+}
+
+/* ============================
+   NAVBAR
+============================ */
 .navbar {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
-    background: #f5f7fb;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
 }
 
 .nav-btn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     border: none;
-    background: #e4e7ec;
-    cursor: pointer;
-    font-weight: 600;
+    background: #dcddde;
     border-radius: 6px;
+    cursor: pointer;
     transition: 0.2s;
 }
 
 .nav-btn:hover {
-    background: #d9dee7;
+    background: #d1d5db;
 }
 
 .active {
-    background: #4CAF50;
+    background: #374151;
     color: white;
 }
-
 .activeBtn {
-    background: #4CAF50;
+    background: #374151;
     color: white;
 }
 
-/* MAIN LAYOUT */
-
+/* ============================
+   LAYOUT
+============================ */
 .main {
     display: flex;
-    gap: 40px;
+    gap: 30px;
 }
 
-.view-containers {
-    display: flex;
-    gap: 20px;
-}
-
-/* BOXES */
-
+/* ============================
+   LEFT PANEL
+============================ */
 .box {
-    width: 300px;
+    width: 280px;
     height: 400px;
-    border: 2px dashed #ccc;
-    padding: 10px;
-    position: relative;
+     background: #6e94a3;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 15px;
 }
-
+.box,
+.edit-box,
+.section-box {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+/* ============================
+   EDIT VIEW
+============================ */
 .edit-box {
     width: 750px;
+   background: #6e94a3;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid  #cbd5e1;
     height: auto;
-    overflow-y: auto;
 }
 
-/* INPUT AREA */
-
-.input-row {
+/* ============================
+   HEADER
+============================ */
+h3 {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
 }
-
-.edit-input {
-    flex: 1;
-    padding: 8px;
-    margin-top: 20px;
-}
-
-.add-btn {
-    margin-top: 20px;
-    padding: 8px 15px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-/* SAVE BUTTON */
-
 .save-btn {
-    margin: auto 135px;
-    padding: 1px 5px;
-    position: absolute;
-    background-color: #867f7f;
-    border: none;
+    padding: 7px 12px;
+    background: #374151;
     color: white;
-    border-radius: 4px;
-    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    margin-bottom: 4px;
 }
-
+/* ============================
+   BUTTONS
+============================ */
 .save-btn1 {
-    margin-left: 40px;
-    padding: 1px 5px;
-    position: absolute;
-    background-color: #867f7f;
-    border: none;
+    padding: 7px 12px;
+    background: #374151;
     color: white;
-    border-radius: 4px;
-    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    margin-bottom: 4px;
 }
-
-/* FIELD LIST */
-
 .list {
     height: 330px;
     overflow-y: auto;
+    background: #ede9fe;
+    border-radius: 15px;
+    width: auto;
 }
 
-.item {
-    background: #4CAF50;
+.add-btn {
+    padding: 8px 14px;
+    background: #4b5563;
     color: white;
-    padding: 10px;
+    border: none;
+    border-radius: 6px;
+}
+
+/* ============================
+   INPUT ROW
+============================ */
+.input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.edit-input {
+     background: #fff7ed;
+    border: 1px solid #94a3b8;
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+}
+.edit-input:focus {
+    outline: none;
+    border-color: #6b7280;
+    background: #ffffff;
+}
+
+/* ============================
+   ITEMS (NEUTRAL GREY)
+============================ */
+.item {
+    min-width: 0;        /* MOST IMPORTANT */
+    overflow: hidden; 
+    background: #6b7280;
+    color: white;
+    padding: 6px 10px;
     margin: 5px 0;
-    cursor: move;
-    border-radius: 4px;
-    transition: 0.2s;
-
-    min-width: 0;
-    /* THIS IS THE REAL FIX */
-    width: 100%;
-
-    /* ✅ NEW (ELLIPSIS FIX) */
-    min-height: 40px;
+    border-radius: 6px;
+    font-size: 13px;
     display: flex;
     align-items: center;
-    overflow: hidden;
+    height: 40px;
+    transition: all 0.2s ease;
+    cursor: grab;
 }
-
+.item:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: #4b5563;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.item:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+}
 .item span {
+    white-space: nowrap;     
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis;  /* 🔥 main line */
     display: block;
     width: 100%;
 }
 
-.item span.expanded {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: unset;
-    padding: 2px 4px;
-    border-radius: 4px;
-}
-
-.item.expanded {
-    height: auto;
-    align-items: flex-start;
-    /* top align for multiline */
-}
-
-.item:hover {
-    opacity: 0.9;
-    cursor: pointer;
-}
-
-/* SECTION CONTAINER */
-
+/* ============================
+   SECTION BOXES (SOFT BGs)
+============================ */
 .section-box {
-    border: 1px solid #aaa;
+      background: #e9eef5;  /* base soft tone */
+    transition: 0.2s;
+    padding: 12px;
     margin-bottom: 15px;
-    background: #fafafa;
-    min-height: 200px;
-    padding: 10px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
+    border-radius: 10px;
+     border: 2px solid #7dd3fc;
+}
+.section-box:hover {
+    background: #e9eef5;
+}
+.section-box:nth-child(even) {
+    background: #ede9fe; /* LIGHT PURPLE SOFT */
+    border-color: #c4b5fd;
 }
 
-/* SECTION HEADER */
+/* 🎨 SOFT BACKGROUNDS MATCHING GREY */
+.section-box:nth-child(1) {
+    background: #f9fafb;
+}
 
+.section-box:nth-child(2) {
+    background: #f3f4f6;
+}
+
+.section-box:nth-child(3) {
+    background: #eef2f7;
+}
+
+.section-box:nth-child(4) {
+    background: #f1f5f9;
+}
+
+/* ============================
+   SECTION HEADER
+============================ */
 .section-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 10px;
 }
 
-.section-box h4 {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-/* COLUMN INPUT */
-
-.column-input {
-    width: 70px;
-    padding: 4px;
-}
-
-/* SORTABLE AREA */
-
-.section-scroll {
-    flex: 1;
-    overflow-y: auto;
-}
-
-/* GRID LAYOUT FOR FIELDS */
-
+/* ============================
+   DROP AREA
+============================ */
 .section-list {
-    min-height: 100px;
-    width: 100%;
-    align-items: start;
-    display: grid;
-}
-
-.section-list>.item {
-    min-width: 0;
-}
-
-/* OPTIONAL GRID WRAPPER (future use) */
-
-.columns-wrapper {
+    min-height: 80px;
     display: flex;
-    gap: 15px;
-}
-
-.column-box {
-    flex: 1;
-    background: #f5f5f5;
+    flex-wrap: wrap;
+    gap: 10px;
+    border: 2px dashed #64748b;
+    border-radius: 8px;
     padding: 10px;
-    border-radius: 6px;
-    min-height: 120px;
+    background: #ffffff;
 }
 
+/* ============================
+   GRID
+============================ */
 .section-list .item {
-    width: calc(100% / var(--cols) - 10px);
+    flex: 0 0 calc(100% / var(--cols) - 10px);
 }
 
-.item {
-    width: calc(100% / var(--cols) - 10px);
+/* ============================
+   DRAG EFFECT
+============================ */
+.dx-sortable-placeholder {
+    height: 35px;
+    background: #bae6fd;
+    border: 2px dashed #0284c7;
+    border-radius: 6px;
+}
+
+.dx-sortable-dragging {
+    opacity: 0.8;
+    transform: rotate(2deg);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }

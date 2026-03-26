@@ -34,9 +34,10 @@ Add Container
 
 <!-- DYNAMIC SECTIONS -->
 <div
-v-for="section in sections"
+v-for="(section,index) in sections"
 :key="section.name"
 class="section-box"
+:class="`color-${index % 6}`"
 >
 
 <!-- HEADER -->
@@ -56,6 +57,7 @@ v-model="section.columns"
 
 <!-- ✅ SORTABLE WITH SWAP -->
 <DxSortable
+  animation="300"
   tag="div"
   class="section-list"
   :data="section.fields"
@@ -65,6 +67,10 @@ v-model="section.columns"
   :move-item-on-drop="false"
   :allow-reordering="true"
   :allow-drop-inside-item="false"
+  
+  :onDragEnter="onDragEnter"
+  :onDragLeave="onDragLeave"
+  :onDragEnd="onDragEnd"
 
   @add="onAdd"
   @reorder="onAdd"
@@ -114,9 +120,25 @@ columns:""
 }
 },
 
+
 methods:{
 
 // ✅ ONLY FOR CROSS CONTAINER DRAG
+onDragEnter(e){
+    const container = e.toElement || e.itemElement
+    container?.closest('.section-box')?.classList.add('drag-over')
+},
+
+onDragLeave(e){
+    const container = e.fromElement || e.itemElement
+    container?.closest('.section-box')?.classList.remove('drag-over')
+},
+
+onDragEnd(){
+    document.querySelectorAll('.section-box')
+        .forEach(el => el.classList.remove('drag-over'))
+}, 
+
 onAdd(e){
 this.$emit("update-edit", e)
 },
