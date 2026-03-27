@@ -31,6 +31,14 @@ Add Container
 </button>
 
 </div>
+<DxSortable
+  :data="sections"
+  group="section-drag"
+  item-selector=".section-box"
+  :allow-reordering="true"
+  :move-item-on-drop="false"
+  @drag-end="onSectionDrag"
+>
 
 <!-- DYNAMIC SECTIONS -->
 <div
@@ -92,6 +100,8 @@ v-model="section.columns"
 
 </div>
 
+</DxSortable>
+
 </div>
 
 </template>
@@ -119,6 +129,42 @@ methods:{
 // ✅ ONLY FOR CROSS CONTAINER DRAG
 onAdd(e){
 this.$emit("update-edit", e)
+},
+
+//container to container drag and drop 
+onSectionDrag(e){
+
+  const fromIndex = e.fromIndex
+
+  const container = e.toComponent?.$element?.()[0]
+  if (!container || !e.event) return
+
+  const items = Array.from(container.querySelectorAll('.section-box'))
+
+  const mouseY = e.event.clientY
+
+  let targetIndex = items.length - 1 // default last
+
+  for (let i = 0; i < items.length; i++) {
+
+    const rect = items[i].getBoundingClientRect()
+
+    // ✅ compare with middle of element
+    if (mouseY < rect.top + rect.height / 2) {
+      targetIndex = i
+      break
+    }
+  }
+
+  if (fromIndex === targetIndex) return
+
+  const movedItem = this.sections[fromIndex]
+
+  // remove
+  this.sections.splice(fromIndex, 1)
+
+  // insert
+  this.sections.splice(targetIndex, 0, movedItem)
 },
 
 createSection(){
