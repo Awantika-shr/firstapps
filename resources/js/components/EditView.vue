@@ -42,14 +42,34 @@ Add Container
 
 <!-- DYNAMIC SECTIONS -->
 <div
-v-for="section in sections"
-:key="section.name"
+v-for="(section,index ) in sections"
+:key="index"
 class="section-box"
 >
 
 <!-- HEADER -->
 <div class="section-header">
-<h4>{{ section.name }}</h4>
+<div>
+
+  <!-- TEXT -->
+  <h4 
+    v-if="!section.isEditing"
+    @click="enableEdit(section)"
+    style="cursor: pointer;"
+  >
+    {{ section.name }}
+  </h4>
+
+  <!-- INPUT -->
+  <input
+    v-else
+    v-model="section.name"
+    @keyup.enter="disableEdit(section)"
+    @click.stop
+    class="rename-input"
+  />
+
+</div>
 
 <div>
 <span>Columns:</span>
@@ -182,6 +202,13 @@ this.columns=""
 
 saveEditView(){
 this.$emit("save")
+},
+enableEdit(section){
+  section.isEditing = true
+},
+
+disableEdit(section){
+  section.isEditing = false
 },
 
 }
