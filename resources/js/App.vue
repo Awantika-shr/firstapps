@@ -87,87 +87,96 @@ export default {
     },
 
     /* FINAL FIXED LOGIC */
-    onAddOrReorder(e) {
+   onAddOrReorder(e) {
 
-  //extract drag data 
-  const fromData = e.fromData  //source array 
-  const toData = e.toData     //destination array  
-  const fromIndex = e.fromIndex  //original index
-  const toIndex = e.toIndex     //library index      
+  const fromData = e.fromData
+  const toData = e.toData
+  const fromIndex = e.fromIndex
+  const toIndex = e.toIndex
 
-  //safety check 
   if (!fromData || !toData) return
 
-
-  //SAME CONTAINER → CUSTOM GRID SWAP
+  // ✅ SAME CONTAINER (UNCHANGED)
   if (fromData === toData) {
 
-    //get DOM container 
     const container = e.toComponent?.$element?.()[0]
     if (!container) return
-  
-    //get all items elements 
+
     const items = Array.from(container.querySelectorAll('.item'))
 
-    // get mouse drop position
     const mouseY = e.event?.clientY
     const mouseX = e.event?.clientX
 
-    //default fallback index 
     let targetIndex = toIndex
-
-    //track closest element 
     let minDistance = Infinity
 
-   //FIND NEAREST ITEM USING DISTANCE FORMULA  
     items.forEach((el, index) => {
-
       const rect = el.getBoundingClientRect()
 
-      //find center of each item 
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
 
-      //distance from mouse to item center 
       const dx = mouseX - centerX
       const dy = mouseY - centerY
 
-      //Euclidean distance formula 
       const distance = Math.sqrt(dx * dx + dy * dy)
 
-      //Update closest item 
       if (distance < minDistance) {
         minDistance = distance
         targetIndex = index
       }
     })
 
-    //it same position , do nothing 
     if (fromIndex === targetIndex) return
 
-    //swap logic 
     const temp = fromData[fromIndex]
 
     if (this.$set) {
-      //vue reactivity-safe swap
       this.$set(fromData, fromIndex, fromData[targetIndex])
       this.$set(fromData, targetIndex, temp)
     } else {
-      //normal JS swap 
       fromData[fromIndex] = fromData[targetIndex]
       fromData[targetIndex] = temp
     }
+
     return
   }
 
-  //DIFFERENT CONTAINER → MOVE (unchanged)
+  // ✅ DIFFERENT CONTAINER (FIXED)
   const item = fromData[fromIndex]
 
-  //Remove from source 
-  fromData.splice(fromIndex, 1)
+  const container = e.toComponent?.$element?.()[0]
 
-  //insert into target 
-  toData.splice(toIndex, 0, item)
+  let targetIndex = toIndex
+
+  if (container) {
+    const items = Array.from(container.querySelectorAll('.item'))
+
+    const mouseY = e.event?.clientY
+    const mouseX = e.event?.clientX
+
+    let minDistance = Infinity
+
+    items.forEach((el, index) => {
+      const rect = el.getBoundingClientRect()
+
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+
+      const dx = mouseX - centerX
+      const dy = mouseY - centerY
+
+      const distance = Math.sqrt(dx * dx + dy * dy)
+
+      if (distance < minDistance) {
+        minDistance = distance
+        targetIndex = index
+      }
+    })
+  }
+
+  fromData.splice(fromIndex, 1)
+  toData.splice(targetIndex, 0, item)
 },
 
     /* ---------------- SECTION ---------------- */
