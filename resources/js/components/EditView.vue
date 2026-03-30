@@ -80,7 +80,7 @@ min="1"
 v-model="section.columns"
 />
 </div>
-  <!-- ✅ DELETE BUTTON -->
+  <!-- DELETE BUTTON -->
   <button 
     class="delete-btn"
     @click="deleteSection(index)"
@@ -89,7 +89,7 @@ v-model="section.columns"
   </button>
 </div>
 
-<!-- ✅ SORTABLE WITH SWAP -->
+<!-- SORTABLE WITH SWAP -->
 <DxSortable
   tag="div"
   class="section-list"
