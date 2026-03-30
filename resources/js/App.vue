@@ -33,6 +33,7 @@
         @update-list="handleListUpdate"
         @update-edit="handleEditUpdate"
         @add-section="createSection"
+        @delete-section="handleDeleteSection"  
         @save="handleSave"
       />
     </div>
@@ -85,6 +86,16 @@ export default {
     handleEditUpdate(e) {
       this.onAddOrReorder(e)
     },
+    handleDeleteSection(section){
+
+  // ✅ section ke saare fields wapas Module Fields me bhejo
+  section.fields.forEach(field => {
+    this.container1.push(field)
+  })
+
+  // ✅ update UI sync (important)
+  this.updateModuleFields()
+},
 
     /* FINAL FIXED LOGIC */
    onAddOrReorder(e) {
@@ -230,6 +241,7 @@ export default {
         this.updateModuleFields()
       })
     },
+    
 
     loadListView() {
       fetch("/get-listview")

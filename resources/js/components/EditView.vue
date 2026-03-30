@@ -50,7 +50,7 @@ class="section-box"
 <!-- HEADER -->
 <div class="section-header">
 <div>
-
+<span class="drag-icon">⋮⋮</span>
   <!-- TEXT -->
   <h4 
     v-if="!section.isEditing"
@@ -80,6 +80,13 @@ min="1"
 v-model="section.columns"
 />
 </div>
+  <!-- ✅ DELETE BUTTON -->
+  <button 
+    class="delete-btn"
+    @click="deleteSection(index)"
+  >
+    Delete
+  </button>
 </div>
 
 <!-- ✅ SORTABLE WITH SWAP -->
@@ -209,6 +216,15 @@ enableEdit(section){
 
 disableEdit(section){
   section.isEditing = false
+},
+deleteSection(index){
+  const section = this.sections[index]
+
+  // ✅ emit parent ko (fields wapas bhejne ke liye)
+  this.$emit("delete-section", section)
+
+  // ✅ remove section
+  this.sections.splice(index, 1)
 },
 
 }
