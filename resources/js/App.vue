@@ -274,14 +274,24 @@ export default {
         }
 
         section.fields.forEach(field => {
-          group.items.push({
-            dataField: field.name,
-            editorType: field.editorType || "dxTextBox",
-            label: {
-              text: field.label || field.vname || field.name
-            }
-          })
-        })
+
+  // EMPTY HANDLE
+  if (field.itemType === "empty" || field.isEmpty) {
+    group.items.push({
+      itemType: "empty",
+      label: { text: "| |" }
+    })
+    return
+  }
+
+  group.items.push({
+    dataField: field.name,
+    editorType: field.editorType || "dxTextBox",
+    label: {
+      text: field.label || field.vname || field.name
+    }
+  })
+})
 
         result.push(group)
       })
