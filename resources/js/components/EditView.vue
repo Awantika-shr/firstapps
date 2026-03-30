@@ -79,6 +79,12 @@ type="number"
 min="1"
 v-model="section.columns"
 />
+<button 
+  class="empty-btn"
+  @click="addEmptySpace(section)"
+>
+  + Empty Space
+</button>
 </div>
   <!-- DELETE BUTTON -->
   <button 
@@ -113,10 +119,17 @@ v-model="section.columns"
 >
 
 <div
-  v-for="item in section.fields"
+  v-for="(item, i) in section.fields"
   :key="item.id || item.name"
   class="item"
   :title="item.label"
+    :class="[
+    { 
+      'empty-item': item.isEmpty,
+      'active-item': selectedItemIndex === i && selectedSection === section
+    }
+  ]"
+  @click.stop="selectItem(section, i)"
 >
   <span class="label-text">
     {{ item.label }}
@@ -147,7 +160,9 @@ props: ["sections"],
 data(){
 return{
 sectionName:"",
-columns:""
+columns:"",
+selectedItemIndex: null,
+selectedSection: null
 }
 },
 
@@ -210,6 +225,7 @@ this.columns=""
 saveEditView(){
 this.$emit("save")
 },
+
 enableEdit(section){
   section.isEditing = true
 },
@@ -225,6 +241,29 @@ deleteSection(index){
 
   // ✅ remove section
   this.sections.splice(index, 1)
+},
+selectItem(section, index) {
+  this.selectedItemIndex = index
+  this.selectedSection = section
+},
+addEmptySpace(section) {
+
+  if (this.selectedSection !== section || this.selectedItemIndex === null) {
+    alert("Select item first")
+    return
+  }
+
+  const emptyItem = {
+    name: "__empty__" + Date.now(),
+    label: "| |",
+    itemType: "empty",
+    isEmpty: true
+  }
+
+  section.fields.splice(this.selectedItemIndex, 0, emptyItem)
+
+  this.selectedItemIndex = null
+  this.selectedSection = null
 },
 
 }
